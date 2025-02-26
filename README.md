@@ -33,3 +33,5 @@ Profile
 * See your personal data
 * See your friends
 * See your friend's friends
+
+[Phone part can be found here](https://github.com/RumataEstorish/GearHub)
