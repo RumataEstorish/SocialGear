@@ -1,0 +1,8 @@
+*.wgt
+<<<<<<< HEAD
+.sign/.author-signature.xml
+.sign/.manifest.tmp
+.sign/signature1.xml
+=======
+**/.sign
+>>>>>>> branch 'master' of https://rumataestorish.visualstudio.com/DefaultCollection/_git/SocialGear

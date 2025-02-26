@@ -1,0 +1,36 @@
+<resources>
+    <application name="SocialGearConsumers" >
+        <serviceProfile
+            id="/system/socialgear"
+            name="SocialGear"
+            role="consumer"
+            serviceTimeout="25"
+            version="2.0" >
+            <supportedTransports>
+                <transport type="TRANSPORT_BT" />
+                <transport type="TRANSPORT_WIFI" />
+            </supportedTransports>
+
+           <serviceChannel
+                id="98"
+                dataRate="high"
+                priority="high"
+                reliability="enable" >
+            </serviceChannel>
+           <serviceChannel
+                id="99"
+                dataRate="high"
+                priority="high"
+                reliability="enable" >
+            </serviceChannel>
+            <serviceChannel
+                id="104"
+                dataRate="low"
+                priority="low"
+                reliability="enable" >
+            </serviceChannel>
+         
+        </serviceProfile>
+    </application>
+
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="https://sites.google.com/site/gearapplications/socialgear" version="2.0.4" viewmodes="maximized">
+    <access origin="*" subdomains="true"></access>
+    <tizen:application id="h97fP4q1rn.SocialGear" package="h97fP4q1rn" required_version="2.2.1"/>
+    <author href="https://sites.google.com/site/gearapplications/socialgear" email="rumataestorish@yandex.ru">Rumata</author>
+    <content src="index.html"/>
+    <description>Unofficial VK client</description>
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+    <feature name="http://developer.samsung.com/tizen/feature/network.accessory_protocol"/>
+    <feature name="http://tizen.org/feature/network.internet"/>
+    <feature name="http://tizen.org/feature/download"/>
+    <icon src="icon_launcher.png"/>
+    <tizen:metadata key="AccessoryServicesLocation" value="res/xml/accessoryservices.xml"/>
+    <tizen:metadata key="master_app_name" value="GearHub"/>
+    <tizen:metadata key="master_app_packagename" value="petbotproject.gearhub"/>
+    <tizen:metadata key="master_app_min_version" value="1"/>
+    <tizen:metadata key="master_app_playstore_deeplink" value="https://play.google.com/store/apps/details?id=petbotproject.gearhub"/>
+    <tizen:metadata key="master_app_auto_uninstallation" value="no"/>
+    <name>SocialGear</name>
+    <tizen:privilege name="http://developer.samsung.com/privilege/accessoryprotocol"/>
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:privilege name="http://tizen.org/privilege/filesystem.read"/>
+    <tizen:privilege name="http://tizen.org/privilege/filesystem.write"/>
+    <tizen:privilege name="http://tizen.org/privilege/unlimitedstorage"/>
+    <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
+    <tizen:privilege name="http://tizen.org/privilege/download"/>
+    <tizen:privilege name="http://tizen.org/privilege/content.read"/>
+    <tizen:privilege name="http://tizen.org/privilege/content.write"/>
+    <tizen:profile name="wearable"/>
+    <tizen:setting background-support="enable" encryption="disable" hwkey-event="enable"/>
+</widget>

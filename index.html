@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<meta name="description"
+	content="Unofficial VKontakte client for Samsung Gear" />
+
+<title>SocialGear</title>
+
+<link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.min.css" />
+<link rel="stylesheet" media="all and (-tizen-geometric-shape: circle)"
+	href="lib/tau/wearable/theme/default/tau.circle-patch-0.0.0.1.min.css">
+
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script type="text/javascript" src="lib/tau/wearable/js/tau.min.js"></script>
+
+<script type="text/javascript" src="js/GearHttp/requestQueue.js"></script>
+<script type="text/javascript" src="js/vk/feed.js"></script>
+<script type="text/javascript" src="js/ui/sections.js"></script>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+
+
+
+<script type="text/javascript" src="js/input/typeGear-1.0.0.js"></script>
+<script type="text/javascript" src="js/input/input-1.0.4.1.js"></script>
+
+<script type="text/javascript" src="js/utils-2.1.4.11.js"></script>
+<script type="text/javascript" src="js/log-1.0.1.1.js"></script>
+<script type="text/javascript" src="js/ui/toastMessage-1.1.1.js"></script>
+<script type="text/javascript" src="js/utils-2.1.4.11.js"></script>
+<script type="text/javascript" src="js/circle-helper-1.0.0.3.js"></script>
+<script type="text/javascript" src="js/moreoptions.js"></script>
+<script type="text/javascript" src="js/sap-2.0.3.4.js"></script>
+<script type="text/javascript" src="js/GearHttp/gearHttp-1.2.1.0.js"></script>
+<script type="text/javascript" src="js/GearHttp/androidHttpRequest.js"></script>
+<script type="text/javascript" src="js/GearHttp/androidRequestData.js"></script>
+<script type="text/javascript" src="js/GearHttp/requestHeader.js"></script>
+<script type="text/javascript" src="js/FilesGear/sortByEnum.js"></script>
+<script type="text/javascript" src="js/FilesGear/sortOrderEnum.js"></script>
+<script type="text/javascript"
+	src="js/FilesGear/contentManagement-1.0.1.js"></script>
+<script type="text/javascript" src="js/FilesGear/dirs-1.0.3.js"></script>
+<script type="text/javascript" src="js/FilesGear/filesAction-1.0.1.js"></script>
+<script type="text/javascript" src="js/FilesGear/listDirTypes-1.0.0.js"></script>
+<script type="text/javascript" src="js/ui/virtualList-2.0.1.js"></script>
+
+<script type="text/javascript" src="js/vk/vkClient.js"></script>
+<script type="text/javascript" src="js/vk/vkClient.messages.js"></script>
+<script type="text/javascript" src="js/vk/vkClient.feed.js"></script>
+<script type="text/javascript" src="js/ui/dialogsProgress.js"></script>
+<script type="text/javascript" src="js/ui/messages.js"></script>
+<script type="text/javascript" src="js/ui/circleProgress-1.0.0.js"></script>
+<script type="text/javascript" src="js/ui/actionMenu-2.1.0.5.js"></script>
+
+<script type="text/javascript" src="js/main.js"></script>
+
+
+<script src="locales/en-us/language.js"></script>
+<script src="language.js"></script>
+
+</head>
+<body id="body">
+
+	<div id="popupToast" class="ui-popup ui-popup-toast">
+		<div id="popupToastMsg" class="ui-popup-content"
+			style="overflow-y: no-scroll;"></div>
+	</div>
+
+	<div id="main" class="ui-page ui-page-active">
+		<span id="feedButton" onclick="feedClick()" class="circle"
+			style="background-color: #620064; top: 35px; left: 36%">	
+			<img class="circle-img" src="images/news_.png" alt=""> 
+			<span class="circle-text">Новости</span>
+		</span> 
+			
+		 <span id="dialogsButton" onclick="loadDialogs()" class="circle"
+			style="background-color: #19007F; top: 36%; margin-left: 30px">
+			<img class="circle-img" src="images/messages_.png" alt="">
+			<span class="circle-text">Диалоги</span>
+		</span> 
+		
+		<span id="profileButton" onclick="profileClick()" class="circle"
+			style="background-color: #007F05; top: 36%; right: 30px"> <img
+			id="user_image" class="circle-img" src="images/profile_large.png">
+			<span class="circle-text">Профиль</span>
+		</span> 
+		
+		<span id="settingsButton" onclick="settingsClick()" class="circle"
+			style="background-color: #997702; bottom: 30px; left: 36%"> <img
+			class="circle-img" src="images/settings_large.png" alt=""> <span
+			class="circle-text">Настройки</span>
+		</span>
+	</div>
+
+	<div class="ui-page" id="pageCircleProgressBar"
+		data-enable-page-scroll="false">
+		<div class="ui-content content-padding">
+			<div class="result" id="result"></div>
+			<progress class="ui-circle-progress" id="circleprogress" max="100"
+				value="20"></progress>
+			<!-- <div id="circleProgressDescription" class="ui-processing-text"></div> -->
+		</div>
+	</div>
+
+	<div class="ui-page" id="smallProcessingPage">
+		<div class="ui-content content-padding">
+			<div class="small-processing-container">
+				<div class="ui-processing" style="visibility: hidden;"></div>
+				<div id="smallProcessingDescription" class="ui-processing-text"></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			(function() {
+				var page = document.getElementById("smallProcessingPage");
+				page.addEventListener("pageshow", function(event) {
+					var page = event.target, processing = page.querySelector(".ui-processing");
+					processing.style.visibility = "";
+				}, false);
+
+				page.addEventListener("pagebeforehide", function(event) {
+					var page = event.target, processing = page.querySelector(".ui-processing");
+					processing.style.visibility = "hidden";
+				}, false);
+			}());
+		</script>
+
+	</div>
+
+	<div id="settingsPage" class="ui-page">
+		<header class="ui-header">
+			<h2 class="ui-title"></h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+				<li class="li-has-multiline li-has-checkbox"><label
+					id="checkUnreadLabel"> <span
+						class="ui-li-sub-text li-text-sub"></span> <input type="checkbox"
+						onclick="checkUnreadClick(this)" />
+				</label></li>
+			</ul>
+		</div>
+	</div>
+
+
+	<div id="feedPage" class="ui-page">
+		<header class="ui-header">
+			<h2 class="ui-title"></h2>
+		</header>
+		<!-- <div id="pageIndicator" class="ui-page-indicator"
+			style="visibility: hidden"></div>
+		<div id="feedContent" style="display: inline-block" class="ui-content">
+			<div>
+				<section class="ui-section-active"></section>
+				<section></section>
+				<section></section>
+			</div>
+			 -->
+			<!-- <ul id="feedList" class="ui-listview"></ul> -->
+			
+			<div class="ui-content" style="display: inline-block" id="feedContent" onclick="openFeedItem(this.id)">
+			<iframe id="feedText" style="color: white; width: 100%; border-color: transparent;"></iframe>
+			<ul class="ui-listview" id="feedList" style="display: block;">
+			</ul>
+		</div>
+	</div>
+
+	<div id="feedFullPage" class="ui-page">
+		<header class="ui-header">
+			<h2 class="ui-title"></h2>
+		</header>
+		<div class="ui-content" style="display: inline-block"
+			id="feedFullContent">
+			<iframe id="feedFullText"
+				style="height: 100%; color: white; width: 100%; border-color: transparent;"></iframe>
+
+			<ul class="ui-listview" id="feedFullList" style="display: block;">
+			</ul>
+		</div>
+	</div>
+
+	<div id="messagesPage" class="ui-page">
+		<header class="ui-header ui-has-more">
+			<h2 class="ui-title"></h2>
+			<button type="button" onclick="openMessagesMenu()" style="z-index: 1000"
+				class="ui-more ui-icon-overflow"></button>
+		</header>
+		<div id="messagesContent"
+			style="display: block; overflow-x: hidden; word-wrap: break-word;"
+			class="ui-content">
+			<ul class="ui-listview">
+				<!-- <div class="right-bubble-parent">
+					<span class="right-name-bubble">Rumata Estorish</span> <span
+						class="right-date-bubble">11.02.2017</span>
+					<div class="right-bubble">Test</div>
+				</div>
+				<div class="left-bubble-parent">
+					<span class="left-name-bubble">PetBot Project</span> <span
+						class="left-date-bubble">11.02.1987</span>
+					<div class="left-bubble">Test</div>
+				</div>-->
+			</ul>
+		</div>
+	</div>
+
+
+	<div id="dialogsPage" class="ui-page">
+		<header class="ui-header">
+			<h2 class="ui-title"></h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+
+			</ul>
+		</div>
+	</div>
+
+	<div id="userPage" class="ui-page">
+		<header class="ui-header">
+			<h2 class="ui-title"></h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+				<li class="li-has-thumb-left li-has-multiline"><a href="#"
+					id="userNameA"><span class="ui-li-sub-text li-text-sub"
+						id="user_name_details"></span><img src="" id="user_image_details"
+						style="background: rgba(0, 0, 0, 1)" class="ui-li-thumb-left" /></a></li>
+				<li class="li-has-multiline"><a href="#" id="userLastNameA"><span
+						class="ui-li-sub-text li-text-sub" id="user_lastname_details"></span></a>
+				</li>
+				<li class="li-has-multiline"><a href="#" id="userBDayA"><span
+						class="ui-li-sub-text li-text-sub" id="user_bday"></span></a></li>
+				<li class="li-has-multiline" onclick="friendsClick()"><a
+					href="#" id="userFriendsA"><span
+						class="ui-li-sub-text li-text-sub" id="user_friends"></span></a></li>
+				<li style="display: none" class="li-has-multiline"
+					onclick="photosClick()"><a href="#" id="userPhotosA"><span
+						class="ui-li-sub-text li-text-sub" id="user_photos"></span></a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="friendsPage" class="ui-page">
+	<header class="ui-header">
+			<h2 class="ui-title"></h2>
+		</header>
+		<div class="ui-content">
+			<ul id="friendsList" class="ui-listview">
+
+			</ul>
+		</div>
+	</div>
+
+</body>
+</html>
